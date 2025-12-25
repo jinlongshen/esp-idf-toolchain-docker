@@ -19,6 +19,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Short SHA
+        id: vars
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -37,7 +41,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/jinlongshen/esp-idf-c3:latest
-            ghcr.io/jinlongshen/esp-idf-c3:latest-${{ github.sha }}
+            ghcr.io/jinlongshen/esp-idf-c3:sha-${{ steps.vars.outputs.short_sha }}
 
   freetype:
     runs-on: ubuntu-24.04
@@ -49,6 +53,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Short SHA
+        id: vars
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -67,6 +75,6 @@ jobs:
           file: ./Dockerfile.freetype
           push: true
           tags: |
-            ghcr.io/jinlongshen/esp-idf-c3-freetype:freetype
-            ghcr.io/jinlongshen/esp-idf-c3-freetype:freetype-${{ github.sha }}
+            ghcr.io/jinlongshen/esp-idf-c3-freetype:latest
+            ghcr.io/jinlongshen/esp-idf-c3-freetype:sha-${{ steps.vars.outputs.short_sha }}
 
