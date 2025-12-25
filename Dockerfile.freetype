@@ -1,32 +1,16 @@
 FROM ghcr.io/jinlongshen/esp-idf-c3:latest
 
-# Install build dependencies
 RUN apt-get update && apt-get install -y \
-    cmake \
-    ninja-build \
-    git \
+    cmake ninja-build git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy your customized FreeType source + config + scripts
-# Expected structure:
-#   freetype/
-#       CMakeLists.txt            ← your custom trimmed version
-#       src/                      ← full FreeType repo
-#       riscv32-toolchain.cmake
-#       build.sh
 COPY freetype /opt/freetype-src
 
-# Overwrite upstream FreeType CMakeLists with your custom one
 RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/src/CMakeLists.txt
 
-# Ensure build script is executable
 RUN chmod +x /opt/freetype-src/build.sh
 
-# Build and install FreeType inside the container
-RUN cd /opt/freetype-src && \
-    ./build.sh Release
+RUN cd /opt/freetype-src && ./build.sh
 
-# FreeType is now installed in /opt/freetype
-# Clean up source to reduce image size
 RUN rm -rf /opt/freetype-src
 

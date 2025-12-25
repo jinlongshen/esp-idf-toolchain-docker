@@ -1,9 +1,0 @@
-/opt/freetype-src/build/CMakeFiles/freetype.dir
-/opt/freetype-src/build/CMakeFiles/package.dir
-/opt/freetype-src/build/CMakeFiles/package_source.dir
-/opt/freetype-src/build/CMakeFiles/edit_cache.dir
-/opt/freetype-src/build/CMakeFiles/rebuild_cache.dir
-/opt/freetype-src/build/CMakeFiles/list_install_components.dir
-/opt/freetype-src/build/CMakeFiles/install.dir
-/opt/freetype-src/build/CMakeFiles/install/local.dir
-/opt/freetype-src/build/CMakeFiles/install/strip.dir
