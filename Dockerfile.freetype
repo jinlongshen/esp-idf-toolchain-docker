@@ -10,7 +10,8 @@ RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/src/CMakeLists.txt
 
 RUN chmod +x /opt/freetype-src/build.sh
 
-RUN cd /opt/freetype-src && ./build.sh
+# FIX: activate ESP-IDF environment so riscv32-esp-elf-gcc is in PATH
+RUN . /opt/esp-idf/export.sh && cd /opt/freetype-src && ./build.sh
 
 RUN rm -rf /opt/freetype-src
 
