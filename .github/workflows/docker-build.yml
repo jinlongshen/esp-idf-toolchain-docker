@@ -1,4 +1,4 @@
-name: Build and Publish ESP-IDF Toolchain Image
+name: Build and Publish ESP-IDF Toolchain Images
 
 on:
   push:
@@ -15,6 +15,16 @@ jobs:
       contents: read
       packages: write
 
+    strategy:
+      matrix:
+        variant:
+          - name: base
+            file: Dockerfile
+            tag: latest
+          - name: freetype
+            file: Dockerfile.freetype
+            tag: freetype
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -29,13 +39,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push ${{ matrix.variant.name }} image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./${{ matrix.variant.file }}
           push: true
           tags: |
-            ghcr.io/jinlongshen/esp-idf-c3:latest
-            ghcr.io/jinlongshen/esp-idf-c3:${{ github.sha }}
+            ghcr.io/jinlongshen/esp-idf-c3:${{ matrix.variant.tag }}
+            ghcr.io/jinlongshen/esp-idf-c3:${{ matrix.variant.tag }}-${{ github.sha }}
 
