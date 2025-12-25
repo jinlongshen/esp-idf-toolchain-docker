@@ -20,9 +20,11 @@ jobs:
         variant:
           - name: base
             file: Dockerfile
+            repo: esp-idf-c3
             tag: latest
           - name: freetype
             file: Dockerfile.freetype
+            repo: esp-idf-c3-freetype
             tag: freetype
 
     steps:
@@ -46,6 +48,6 @@ jobs:
           file: ./${{ matrix.variant.file }}
           push: true
           tags: |
-            ghcr.io/jinlongshen/esp-idf-c3:${{ matrix.variant.tag }}
-            ghcr.io/jinlongshen/esp-idf-c3:${{ matrix.variant.tag }}-${{ github.sha }}
+            ghcr.io/jinlongshen/${{ matrix.variant.repo }}:${{ matrix.variant.tag }}
+            ghcr.io/jinlongshen/${{ matrix.variant.repo }}:${{ matrix.variant.tag }}-${{ github.sha }}
 
