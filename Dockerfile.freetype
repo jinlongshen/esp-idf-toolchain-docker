@@ -1,17 +1,24 @@
 FROM ghcr.io/jinlongshen/esp-idf-c3:latest
 
+# Install build dependencies
 RUN apt-get update && apt-get install -y \
-    cmake ninja-build git \
+    cmake \
+    ninja-build \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy your customized FreeType source + config + scripts
 COPY freetype /opt/freetype-src
 
+# Overwrite upstream FreeType CMakeLists with your custom one
 RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/src/CMakeLists.txt
 
+# Ensure build script is executable
 RUN chmod +x /opt/freetype-src/build.sh
 
-# FIX: activate ESP-IDF environment so riscv32-esp-elf-gcc is in PATH
-RUN . /opt/esp-idf/export.sh && cd /opt/freetype-src && ./build.sh
+# Build FreeType (no ESP-IDF sourcing needed)
+RUN cd /opt/freetype-src && ./build.sh
 
+# Clean up source to reduce image size
 RUN rm -rf /opt/freetype-src
 

@@ -1,10 +1,16 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR riscv32)
 
-set(CMAKE_C_COMPILER riscv32-esp-elf-gcc)
-set(CMAKE_CXX_COMPILER riscv32-esp-elf-g++)
-set(CMAKE_AR riscv32-esp-elf-ar)
-set(CMAKE_RANLIB riscv32-esp-elf-ranlib)
+# Absolute paths required by CMake
+set(CMAKE_C_COMPILER   /opt/esp/idf-tools/tools/riscv32-esp-elf/bin/riscv32-esp-elf-gcc)
+set(CMAKE_CXX_COMPILER /opt/esp/idf-tools/tools/riscv32-esp-elf/bin/riscv32-esp-elf-g++)
+
+set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
+
+set(CMAKE_C_FLAGS   "-Os -ffunction-sections -fdata-sections")
+set(CMAKE_CXX_FLAGS "-Os -ffunction-sections -fdata-sections")
+
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections")
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
