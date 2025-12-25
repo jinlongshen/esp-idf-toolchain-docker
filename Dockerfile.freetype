@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
 COPY freetype /opt/freetype-src
 
 # Overwrite upstream FreeType CMakeLists with your custom one
-RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/src/CMakeLists.txt
+RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/freetype/CMakeLists.txt
+
 
 # Ensure build script is executable
 RUN chmod +x /opt/freetype-src/build.sh
