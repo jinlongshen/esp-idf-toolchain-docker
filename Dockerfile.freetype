@@ -10,11 +10,14 @@ RUN apt-get update && apt-get install -y \
 # Copy your customized FreeType source + config + scripts
 # Expected structure:
 #   freetype/
+#       CMakeLists.txt            ← your custom trimmed version
 #       src/                      ← full FreeType repo
-#       modules.cfg
 #       riscv32-toolchain.cmake
 #       build.sh
 COPY freetype /opt/freetype-src
+
+# Overwrite upstream FreeType CMakeLists with your custom one
+RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/src/CMakeLists.txt
 
 # Ensure build script is executable
 RUN chmod +x /opt/freetype-src/build.sh
