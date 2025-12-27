@@ -1,6 +1,6 @@
 FROM ghcr.io/jinlongshen/esp-idf-c3:latest
 
-# 1. Install standard build tools and USB libraries
+# 1. Install standard build tools
 RUN apt-get update && apt-get install -y \
     cmake \
     ninja-build \
@@ -13,8 +13,10 @@ RUN git config --system --add safe.directory /project
 
 # 3. Handle Freetype source and build
 COPY freetype /opt/freetype-src
-RUN chmod +x /opt/freetype-src/build.sh
-RUN cd /opt/freetype-src && ./build.sh
+RUN chmod +x /opt/freetype-src/build.sh && \
+    cd /opt/freetype-src && ./build.sh
 
-# 4. Clean up source after build to keep image small
+# 4. Clean up source after build
 RUN rm -rf /opt/freetype-src
+
+WORKDIR /project
