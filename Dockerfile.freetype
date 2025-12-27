@@ -11,8 +11,6 @@ RUN git config --system --add safe.directory /project
 
 COPY freetype /opt/freetype-src
 
-RUN cp /opt/freetype-src/CMakeLists.txt /opt/freetype-src/freetype/CMakeLists.txt
-
 RUN chmod +x /opt/freetype-src/build.sh
 
 RUN cd /opt/freetype-src && ./build.sh
