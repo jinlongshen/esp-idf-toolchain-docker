@@ -1,18 +1,20 @@
 FROM ghcr.io/jinlongshen/esp-idf-c3:latest
 
+# 1. Install standard build tools and USB libraries
 RUN apt-get update && apt-get install -y \
     cmake \
     ninja-build \
     git \
+    libusb-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Ensure git works with mounted /project directory
+# 2. Ensure git works with mounted /project directory
 RUN git config --system --add safe.directory /project
 
+# 3. Handle Freetype source and build
 COPY freetype /opt/freetype-src
-
 RUN chmod +x /opt/freetype-src/build.sh
-
 RUN cd /opt/freetype-src && ./build.sh
 
+# 4. Clean up source after build to keep image small
 RUN rm -rf /opt/freetype-src
