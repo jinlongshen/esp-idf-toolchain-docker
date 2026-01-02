@@ -17,30 +17,25 @@ COPY toolchain /opt/toolchain
 ARG LVGL_VERSION=release/v9.1
 RUN git clone --branch ${LVGL_VERSION} --depth 1 https://github.com/lvgl/lvgl.git /opt/lvgl-src
 
-# 5. Configure and build LVGL for ESP32-C3 using the riscv32 toolchain
+# 5. Copy LVGL user configuration (lv_conf.h) AFTER cloning
+COPY lvgl-config/lv_conf.h /opt/lvgl-src/lv_conf.h
+
+# 6. Configure and build LVGL for ESP32-C3 using the riscv32 toolchain
 RUN mkdir -p /opt/lvgl-build && \
     cd /opt/lvgl-build && \
     cmake \
-        -DCMAKE_TOOLCHAIN_FILE=/opt/toolchain/riscv32-toolchain.cmake \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/opt/lvgl \
-        -DLV_CONF_BUILD_DISABLE_EXAMPLES=ON \
-        -DLV_CONF_BUILD_DISABLE_DEMOS=ON \
-        -DLV_CONF_BUILD_DISABLE_TESTS=ON \
-        -DLV_CONF_BUILD_ENABLE_FREETYPE=ON \
-        -DLV_CONF_BUILD_ENABLE_MONOCHROME=ON \
-        -DLV_CONF_BUILD_ENABLE_SDL=OFF \
-        -DLV_CONF_BUILD_ENABLE_DRAW_SW=ON \
-        -DLV_CONF_BUILD_ENABLE_DRAW_SW_ASM=OFF \
-        -DLV_CONF_BUILD_ENABLE_DRAW_SW_SIMD=OFF \
-        -DLV_CONF_BUILD_ENABLE_GPU=OFF \
-        -DLV_CONF_BUILD_ENABLE_LOG=OFF \
-        -G Ninja \
-        /opt/lvgl-src && \
+      -DCMAKE_TOOLCHAIN_FILE=/opt/toolchain/riscv32-toolchain.cmake \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/opt/lvgl \
+      -DLV_CONF_PATH=/opt/lvgl-src/lv_conf.h \
+      -DCMAKE_C_FLAGS="-I/opt/freetype/include" \
+      -DCMAKE_CXX_FLAGS="-I/opt/freetype/include" \
+      -G Ninja \
+      /opt/lvgl-src && \
     ninja && \
     ninja install
 
-# 6. Clean up source to keep image small
+# 7. Clean up source to keep image small
 RUN rm -rf /opt/lvgl-src /opt/lvgl-build
 
 WORKDIR /project
