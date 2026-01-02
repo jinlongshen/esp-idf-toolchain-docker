@@ -11,12 +11,15 @@ RUN apt-get update && apt-get install -y \
 # 2. Ensure git works with mounted /project directory
 RUN git config --system --add safe.directory /project
 
-# 3. Handle Freetype source and build
+# 3. Copy shared toolchain definitions into the image
+COPY toolchain /opt/toolchain
+
+# 4. Handle FreeType source and build
 COPY freetype /opt/freetype-src
 RUN chmod +x /opt/freetype-src/build.sh && \
     cd /opt/freetype-src && ./build.sh --prefix=/opt/freetype
 
-# 4. Export FreeType include + lib paths for all future layers
+# 5. Export FreeType include + lib paths for all future layers
 ENV FREETYPE_ROOT=/opt/freetype
 ENV FREETYPE_INCLUDE=/opt/freetype/include
 ENV FREETYPE_LIB=/opt/freetype/lib
@@ -24,7 +27,7 @@ ENV CMAKE_PREFIX_PATH=/opt/freetype:${CMAKE_PREFIX_PATH}
 ENV PKG_CONFIG_PATH=/opt/freetype/lib/pkgconfig:${PKG_CONFIG_PATH}
 ENV LD_LIBRARY_PATH=/opt/freetype/lib:${LD_LIBRARY_PATH}
 
-# 5. Clean up source after build
+# 6. Clean up source after build
 RUN rm -rf /opt/freetype-src
 
 WORKDIR /project
