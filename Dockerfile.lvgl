@@ -14,10 +14,11 @@ RUN git config --system --add safe.directory /project
 ARG LVGL_VERSION=release/v9.1
 RUN git clone --branch ${LVGL_VERSION} --depth 1 https://github.com/lvgl/lvgl.git /opt/lvgl-src
 
-# 4. Configure and build LVGL for ESP32-C3
+# 4. Configure and build LVGL as a *pure library* for ESP-IDF consumption
 RUN mkdir -p /opt/lvgl-build && \
     cd /opt/lvgl-build && \
     cmake \
+        -DCMAKE_INSTALL_PREFIX=/opt/lvgl \
         -DLV_CONF_BUILD_DISABLE_EXAMPLES=ON \
         -DLV_CONF_BUILD_DISABLE_DEMOS=ON \
         -DLV_CONF_BUILD_DISABLE_TESTS=ON \
@@ -27,6 +28,8 @@ RUN mkdir -p /opt/lvgl-build && \
         -DLV_CONF_BUILD_ENABLE_DRAW_SW=ON \
         -DLV_CONF_BUILD_ENABLE_DRAW_SW_ASM=OFF \
         -DLV_CONF_BUILD_ENABLE_DRAW_SW_SIMD=OFF \
+        -DLV_CONF_BUILD_ENABLE_GPU=OFF \
+        -DLV_CONF_BUILD_ENABLE_LOG=OFF \
         -G Ninja \
         /opt/lvgl-src && \
     ninja && \
