@@ -1,0 +1,39 @@
+FROM ghcr.io/jinlongshen/esp-idf-c3-freetype:latest
+
+# 1. Install build tools needed for LVGL
+RUN apt-get update && apt-get install -y \
+    cmake \
+    ninja-build \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Ensure git works with mounted /project directory
+RUN git config --system --add safe.directory /project
+
+# 3. Clone LVGL (pinned version for reproducibility)
+ARG LVGL_VERSION=release/v9.1
+RUN git clone --branch ${LVGL_VERSION} --depth 1 https://github.com/lvgl/lvgl.git /opt/lvgl-src
+
+# 4. Configure and build LVGL for ESP32-C3
+RUN mkdir -p /opt/lvgl-build && \
+    cd /opt/lvgl-build && \
+    cmake \
+        -DLV_CONF_BUILD_DISABLE_EXAMPLES=ON \
+        -DLV_CONF_BUILD_DISABLE_DEMOS=ON \
+        -DLV_CONF_BUILD_DISABLE_TESTS=ON \
+        -DLV_CONF_BUILD_ENABLE_FREETYPE=ON \
+        -DLV_CONF_BUILD_ENABLE_MONOCHROME=ON \
+        -DLV_CONF_BUILD_ENABLE_SDL=OFF \
+        -DLV_CONF_BUILD_ENABLE_DRAW_SW=ON \
+        -DLV_CONF_BUILD_ENABLE_DRAW_SW_ASM=OFF \
+        -DLV_CONF_BUILD_ENABLE_DRAW_SW_SIMD=OFF \
+        -G Ninja \
+        /opt/lvgl-src && \
+    ninja && \
+    ninja install
+
+# 5. Clean up source to keep image small
+RUN rm -rf /opt/lvgl-src /opt/lvgl-build
+
+WORKDIR /project
+

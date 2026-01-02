@@ -15,6 +15,12 @@ jobs:
       contents: read
       packages: write
 
+    # Rebuild ONLY if Dockerfile changed
+    if: |
+      contains(join(github.event.commits.*.modified, ','), 'Dockerfile') ||
+      contains(join(github.event.commits.*.added, ','), 'Dockerfile') ||
+      github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -50,6 +56,12 @@ jobs:
       contents: read
       packages: write
 
+    # Rebuild ONLY if Dockerfile.freetype changed
+    if: |
+      contains(join(github.event.commits.*.modified, ','), 'Dockerfile.freetype') ||
+      contains(join(github.event.commits.*.added, ','), 'Dockerfile.freetype') ||
+      github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -77,4 +89,45 @@ jobs:
           tags: |
             ghcr.io/jinlongshen/esp-idf-c3-freetype:latest
             ghcr.io/jinlongshen/esp-idf-c3-freetype:sha-${{ steps.vars.outputs.short_sha }}
+
+  lvgl:
+    runs-on: ubuntu-24.04
+    needs: freetype
+    permissions:
+      contents: read
+      packages: write
+
+    # Rebuild ONLY if Dockerfile.lvgl changed
+    if: |
+      contains(join(github.event.commits.*.modified, ','), 'Dockerfile.lvgl') ||
+      contains(join(github.event.commits.*.added, ','), 'Dockerfile.lvgl') ||
+      github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Short SHA
+        id: vars
+        run: echo "short_sha=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push LVGL image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.lvgl
+          push: true
+          tags: |
+            ghcr.io/jinlongshen/esp-idf-c3-dev:latest
+            ghcr.io/jinlongshen/esp-idf-c3-dev:sha-${{ steps.vars.outputs.short_sha }}
 
