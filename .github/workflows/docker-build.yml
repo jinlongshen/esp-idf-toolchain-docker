@@ -15,12 +15,6 @@ jobs:
       contents: read
       packages: write
 
-    # Rebuild ONLY if Dockerfile changed
-    if: |
-      contains(join(github.event.commits.*.modified, ','), 'Dockerfile') ||
-      contains(join(github.event.commits.*.added, ','), 'Dockerfile') ||
-      github.event_name == 'workflow_dispatch'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -56,12 +50,6 @@ jobs:
       contents: read
       packages: write
 
-    # Rebuild ONLY if Dockerfile.freetype changed
-    if: |
-      contains(join(github.event.commits.*.modified, ','), 'Dockerfile.freetype') ||
-      contains(join(github.event.commits.*.added, ','), 'Dockerfile.freetype') ||
-      github.event_name == 'workflow_dispatch'
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -96,12 +84,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-
-    # Rebuild ONLY if Dockerfile.lvgl changed
-    if: |
-      contains(join(github.event.commits.*.modified, ','), 'Dockerfile.lvgl') ||
-      contains(join(github.event.commits.*.added, ','), 'Dockerfile.lvgl') ||
-      github.event_name == 'workflow_dispatch'
 
     steps:
       - name: Checkout repository
