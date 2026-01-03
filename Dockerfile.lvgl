@@ -28,8 +28,8 @@ RUN mkdir -p /opt/lvgl-build && \
       -DCMAKE_BUILD_TYPE=Release \
       -DCMAKE_INSTALL_PREFIX=/opt/lvgl \
       -DLV_CONF_PATH=/opt/lvgl-src/lv_conf.h \
-      -DCMAKE_C_FLAGS="-I/opt/freetype/include" \
-      -DCMAKE_CXX_FLAGS="-I/opt/freetype/include" \
+      -DCMAKE_C_FLAGS="-I/opt/freetype/include -I/opt/freetype/include/freetype2" \
+      -DCMAKE_CXX_FLAGS="-I/opt/freetype/include -I/opt/freetype/include/freetype2" \
       -G Ninja \
       /opt/lvgl-src && \
     ninja && \
