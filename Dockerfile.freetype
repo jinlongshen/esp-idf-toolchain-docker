@@ -21,7 +21,7 @@ RUN chmod +x /opt/freetype-src/build.sh && \
 
 # 5. Export FreeType include + lib paths for all future layers
 ENV FREETYPE_ROOT=/opt/freetype
-ENV FREETYPE_INCLUDE=/opt/freetype/include
+ENV FREETYPE_INCLUDE=/opt/freetype/include/freetype2
 ENV FREETYPE_LIB=/opt/freetype/lib
 ENV CMAKE_PREFIX_PATH=/opt/freetype:${CMAKE_PREFIX_PATH}
 ENV PKG_CONFIG_PATH=/opt/freetype/lib/pkgconfig:${PKG_CONFIG_PATH}
