@@ -1,61 +1,55 @@
 #ifndef LV_CONF_H
 #define LV_CONF_H
 
+/* If we are in Assembly mode (like when compiling .S files),
+   skip everything to prevent "unrecognized opcode" errors */
+#ifdef __ASSEMBLY__
+#else
+
+#include <stdint.h>
+
 /*********************
- *  COLOR SETTINGS
+ * COLOR SETTINGS
  *********************/
-
-/* LVGL 9.x requires explicit native color format.
- * For a 1‑bit monochrome OLED, this is correct.
- */
-#define LV_COLOR_FORMAT_NATIVE LV_COLOR_FORMAT_1BIT
-
-/* Enable monochrome drawing pipeline */
+#define LV_COLOR_DEPTH 1
+#define LV_COLOR_FORMAT_NATIVE LV_COLOR_FORMAT_I1
 #define LV_DRAW_SW_MONOCHROME 1
 
-
 /*********************
- *  MEMORY SETTINGS
+ * TICK & OS SETTINGS
  *********************/
-
-/* 32 KB is enough for monochrome + FreeType */
-#define LV_MEM_SIZE (32U * 1024U)
-
-
-/*********************
- *  TICK SETTINGS
- *********************/
-
+#define LV_USE_OS LV_OS_NONE
 #define LV_TICK_CUSTOM 1
 #define LV_TICK_CUSTOM_INCLUDE "esp_timer.h"
-#define LV_TICK_CUSTOM_SYS_TIME_EXPR (esp_timer_get_time() / 1000)
-
+#define LV_TICK_CUSTOM_SYS_TIME_EXPR (uint32_t)(esp_timer_get_time() / 1000)
 
 /*********************
- *  FEATURE SETTINGS
+ * ARCHITECTURE FIXES
  *********************/
-
-/* FreeType support */
-#define LV_USE_FREETYPE 1
-#define LV_FREETYPE_CACHE_SIZE (64 * 1024)
-
-/* Disable GPU (ESP32‑C3 has none) */
-#define LV_USE_GPU 0
+/* Force LVGL to use standard C drawing instead of ARM assembly */
+#define LV_ARCH_NONE 1
+#define LV_USE_DRAW_SW 1
 #define LV_USE_DRAW_SW_ASM 0
 #define LV_USE_DRAW_SW_SIMD 0
 
-/* Disable logging */
-#define LV_USE_LOG 0
-
+/*********************
+ * FEATURE SETTINGS
+ *********************/
+#define LV_USE_FREETYPE 1
+#if LV_USE_FREETYPE
+    #define LV_FREETYPE_CACHE_SIZE (16 * 1024)
+    #define LV_FREETYPE_USE_SBIT 1
+#endif
+#define LV_FONT_MONTSERRAT_14 1
 
 /*********************
- *  DEMOS / EXAMPLES
+ * DEBUG & MEMORY
  *********************/
+#define LV_MEM_SIZE (32U * 1024U)
+#define LV_USE_ASSERT_NULL 0
+#define LV_USE_ASSERT_MEM_INTEGRITY 0
+#define LV_USE_LOG 0
+#define LV_USE_USER_DATA 1
 
-#define LV_USE_DEMO_WIDGETS 0
-#define LV_USE_DEMO_KEYPAD_AND_ENCODER 0
-#define LV_USE_DEMO_BENCHMARK 0
-#define LV_USE_DEMO_STRESS 0
-
+#endif /* __ASSEMBLY__ */
 #endif /* LV_CONF_H */
-
