@@ -1,27 +1,23 @@
 FROM ghcr.io/jinlongshen/esp-idf-c3:latest
 
-# Use bash so we can source ESP-IDF environment
 SHELL ["/bin/bash", "-c"]
 
 # 1. Install build tools
 RUN apt-get update && apt-get install -y \
-    cmake ninja-build git libusb-1.0-0 \
+    build-essential cmake ninja-build git libusb-1.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Ensure git works with mounted /project directory
 RUN git config --system --add safe.directory /project
 
-# 3. Copy toolchain definitions
-COPY toolchain /opt/toolchain
-
-# 4. Build FreeType (activate ESP-IDF first!)
+# 3. Build FreeType using ESP-IDF toolchain
 COPY freetype /opt/freetype-src
 RUN source /opt/esp-idf/.venv/bin/activate && \
     . /opt/esp-idf/export.sh && \
     chmod +x /opt/freetype-src/build.sh && \
-    cd /opt/freetype-src && ./build.sh --prefix=/opt/freetype
+    cd /opt/freetype-src && ./build.sh
 
-# 5. Export FreeType paths
+# 4. Export FreeType paths
 ENV FREETYPE_ROOT=/opt/freetype
 ENV FREETYPE_INCLUDE=/opt/freetype/include
 ENV FREETYPE_LIB=/opt/freetype/lib
@@ -29,7 +25,7 @@ ENV CMAKE_PREFIX_PATH=/opt/freetype:${CMAKE_PREFIX_PATH}
 ENV PKG_CONFIG_PATH=/opt/freetype/lib/pkgconfig:${PKG_CONFIG_PATH}
 ENV LD_LIBRARY_PATH=/opt/freetype/lib:${LD_LIBRARY_PATH}
 
-# 6. Cleanup
+# 5. Cleanup
 RUN rm -rf /opt/freetype-src
 
 WORKDIR /project
