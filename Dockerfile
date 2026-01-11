@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     libusb-1.0-0 vim-tiny bash-completion \
     && rm -rf /var/lib/apt/lists/*
 
-# Use bash as shell so we can source scripts if needed
 SHELL ["/bin/bash", "-c"]
 
 # 2. Fix Git ownership for mounted volumes
@@ -24,15 +23,17 @@ RUN git clone https://github.com/espressif/esp-idf.git "$IDF_PATH" && \
     git checkout v5.5.2 && \
     git submodule update --init --recursive
 
-# 4. Install ESP-IDF tools (toolchains, Python env, etc.)
-#    IMPORTANT: Do NOT activate any venv before running install.sh
+# 4. Remove old cached toolchains (critical!)
+RUN rm -rf /root/.espressif/tools
+
+# 5. Install ESP-IDF tools
 RUN /opt/esp-idf/install.sh esp32c3 debug-adapter
 
-# 5. Fix GDB symlink
+# 6. Fix GDB symlink
 RUN GDB_PATH=$(find "$IDF_TOOLS_PATH" -name "riscv32-esp-elf-gdb" -type f | head -n 1) && \
     ln -s "$GDB_PATH" /usr/local/bin/riscv32-esp-elf-gdb
 
-# 6. Auto-load ESP-IDF environment for interactive shells
+# 7. Auto-load ESP-IDF environment for interactive shells
 RUN echo "export IDF_PATH=/opt/esp-idf" >> /etc/bash.bashrc && \
     echo ". /opt/esp-idf/export.sh" >> /etc/bash.bashrc
 
