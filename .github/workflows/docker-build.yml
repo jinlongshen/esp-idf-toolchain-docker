@@ -33,12 +33,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push base ESP-IDF 6.1 image
+      - name: Build and push base ESP-IDF 5.5.2 image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
           push: true
+          no-cache: true
           tags: |
             ghcr.io/jinlongshen/esp-idf-c3:latest
             ghcr.io/jinlongshen/esp-idf-c3:sha-${{ steps.vars.outputs.short_sha }}
@@ -74,6 +75,7 @@ jobs:
           context: .
           file: ./Dockerfile.freetype
           push: true
+          no-cache: true
           tags: |
             ghcr.io/jinlongshen/esp-idf-c3-freetype:latest
             ghcr.io/jinlongshen/esp-idf-c3-freetype:sha-${{ steps.vars.outputs.short_sha }}

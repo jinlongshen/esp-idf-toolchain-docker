@@ -23,10 +23,10 @@ RUN git clone https://github.com/espressif/esp-idf.git "$IDF_PATH" && \
     git checkout v5.5.2 && \
     git submodule update --init --recursive
 
-# 4. Remove old cached toolchains (critical!)
+# 4. Remove any old toolchains (critical!)
 RUN rm -rf /root/.espressif/tools
 
-# 5. Install ESP-IDF tools
+# 5. Install ESP-IDF tools (with debug adapter)
 RUN /opt/esp-idf/install.sh esp32c3 debug-adapter
 
 # 6. Fix GDB symlink

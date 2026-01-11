@@ -12,6 +12,7 @@ RUN git config --system --add safe.directory /project
 
 # 3. Build FreeType using ESP-IDF toolchain
 COPY freetype /opt/freetype-src
+
 RUN . /opt/esp-idf/export.sh && \
     chmod +x /opt/freetype-src/build.sh && \
     cd /opt/freetype-src && ./build.sh
