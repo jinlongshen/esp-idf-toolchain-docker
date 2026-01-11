@@ -21,7 +21,7 @@ ENV IDF_TOOLS_PATH=/root/.espressif
 
 RUN git clone https://github.com/espressif/esp-idf.git "$IDF_PATH" && \
     cd "$IDF_PATH" && \
-    git checkout v6.1-dev && \
+    git checkout v5.5.2 && \
     git submodule update --init --recursive
 
 # 4. Create ESP-IDF Python virtualenv
